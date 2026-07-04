@@ -11,7 +11,7 @@ This guide deploys the site by **cloning from GitHub onto the VPS** and building
 | A Webuzo VPS | With root/WHM access and the Webuzo panel installed |
 | SSH access to the VPS | Or use Webuzo's built-in Terminal |
 | Node.js 18+ available in Webuzo | Webuzo's "Node.js Selector" lets you install it |
-| A domain name (optional but recommended) | e.g. `rasmuta.org` |
+| A domain name (optional but recommended) | `rasmutafoundation.org` |
 | ~1 GB free RAM | For the production build |
 
 The project uses Next.js **standalone output**, so the production build at `.next/standalone/server.js` is self-contained — no `node_modules` needed at runtime.
@@ -29,13 +29,13 @@ The project uses Next.js **standalone output**, so the production build at `.nex
 ### 1b. Create the addon domain (if using a custom domain)
 
 1. Webuzo panel → **Domains → Addon Domains** → **Add Domain**.
-2. **Domain Name**: your domain (e.g. `rasmuta.org`).
+2. **Domain Name**: `rasmutafoundation.org`.
 3. **Document Root**: `public_html/rasmuta`.
 4. Click **Add Domain**. Webuzo creates the empty `rasmuta` folder.
 
 ### 1c. Point your domain's DNS to the VPS
 
-At your domain registrar, set an **A record** pointing your domain to the VPS IP. DNS propagation takes 5 min – 24 hours.
+At your domain registrar, set an **A record** pointing `rasmutafoundation.org` to the VPS IP. DNS propagation takes 5 min – 24 hours.
 
 ---
 
@@ -126,7 +126,7 @@ This script:
    | **Node.js version** | 18.x or 20.x (highest available) |
    | **Application mode** | Production |
    | **Application root** | `rasmuta` |
-   | **Application URL** | your domain (e.g. `rasmuta.org`) |
+   | **Application URL** | `rasmutafoundation.org` |
    | **Application startup file** | `.next/standalone/server.js` |
 
 3. In **Environment variables**, add:
@@ -150,7 +150,7 @@ This script:
 1. Webuzo → **SSL/TLS → Let's Encrypt**.
 2. Select your domain → **Issue Certificate**.
 3. Wait 30–60 seconds.
-4. Your site is now accessible at `https://rasmuta.org` ✨
+4. Your site is now accessible at `https://rasmutafoundation.org` ✨
 
 ---
 
