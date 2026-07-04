@@ -1,6 +1,6 @@
 # Deploying the RAS MUTA Foundation Website to a Webuzo VPS
 
-This guide walks you through every step to deploy this Next.js website to a Webuzo-managed VPS. No prior Webuzo experience is assumed.
+This guide deploys the site by **cloning from GitHub onto the VPS** and building there. This is the cleanest workflow — future updates are just `git pull && bash scripts/deploy-webuzo.sh`.
 
 ---
 
@@ -9,285 +9,248 @@ This guide walks you through every step to deploy this Next.js website to a Webu
 | Item | Notes |
 |---|---|
 | A Webuzo VPS | With root/WHM access and the Webuzo panel installed |
-| SSH access to the VPS | For uploading files and running commands |
-| The project files | Either pulled from GitHub or uploaded as a ZIP |
-| A domain name (optional but recommended) | e.g. `rasmutafoundation.org` |
+| SSH access to the VPS | Or use Webuzo's built-in Terminal |
 | Node.js 18+ available in Webuzo | Webuzo's "Node.js Selector" lets you install it |
+| A domain name (optional but recommended) | e.g. `rasmuta.org` |
+| ~1 GB free RAM | For the production build |
 
-The project is a **Next.js 16** app with **standalone output**, which means the production build produces a self-contained server at `.next/standalone/server.js` that does NOT need `node_modules` to run. This makes VPS deployment much simpler than a standard Next.js app.
-
----
-
-## 1. Preparing the project (already done — just for your reference)
-
-The following have already been configured:
-
-- `next.config.ts` has `output: "standalone"` ✓
-- `package.json` has a `build` script that produces standalone output and copies `.next/static` + `public/` into `.next/standalone/` ✓
-- `package.json` has a `start` script: `NODE_ENV=production node .next/standalone/server.js` ✓
-- `.env.example` documents the required environment variables ✓
-- `scripts/deploy-webuzo.sh` automates install + build on the VPS ✓
-- `.gitignore` excludes `.env`, `db/*.db`, `node_modules`, `.next/`, `upload/`, and large screenshots ✓
-- The latest code is on GitHub: https://github.com/lilromeo2290/RasMuta ✓
+The project uses Next.js **standalone output**, so the production build at `.next/standalone/server.js` is self-contained — no `node_modules` needed at runtime.
 
 ---
 
-## 2. Get the project files onto the VPS
+## 1. One-time VPS setup
 
-You have two options. **Option A (Git) is strongly recommended** — it makes future updates trivial.
+### 1a. Install Node.js in Webuzo
 
-### Option A — Clone from GitHub (recommended)
+1. Log in to **Webuzo panel** (usually `https://YOUR_VPS_IP:20000`).
+2. Find **Node.js Selector** (under "Software" or "Advanced").
+3. Click **Install Node.js** → choose **Node.js 18 LTS** or newer.
 
-1. SSH into your VPS:
-   ```bash
-   ssh root@YOUR_VPS_IP
-   ```
+### 1b. Create the addon domain (if using a custom domain)
 
-2. Go to the Webuzo user's `public_html` directory. For the default Webuzo user (usually `admin` or your username), this is typically:
-   ```bash
-   cd /home/USERNAME/public_html
-   ```
-   Replace `USERNAME` with your actual Webuzo username.
+1. Webuzo panel → **Domains → Addon Domains** → **Add Domain**.
+2. **Domain Name**: your domain (e.g. `rasmuta.org`).
+3. **Document Root**: `public_html/rasmuta`.
+4. Click **Add Domain**. Webuzo creates the empty `rasmuta` folder.
 
-3. Clone the repo:
-   ```bash
-   git clone https://github.com/lilromeo2290/RasMuta.git rasmuta
-   cd rasmuta
-   ```
+### 1c. Point your domain's DNS to the VPS
 
-### Option B — Upload a ZIP
-
-1. On your local machine, download the project as a ZIP from GitHub:
-   `https://github.com/lilromeo2290/RasMuta` → Code → Download ZIP
-
-2. In the Webuzo panel, open **File Manager** and navigate to `public_html/`.
-
-3. Upload the ZIP and extract it. Rename the extracted folder to `rasmuta`.
-
-   Or via SSH:
-   ```bash
-   cd /home/USERNAME/public_html
-   # upload rasmuta.zip via scp or sftp, then:
-   unzip rasmuta.zip
-   mv RasMuta-main rasmuta
-   cd rasmuta
-   ```
+At your domain registrar, set an **A record** pointing your domain to the VPS IP. DNS propagation takes 5 min – 24 hours.
 
 ---
 
-## 3. Set up Node.js in Webuzo
+## 2. Clone the repo onto the VPS
 
-1. Log in to your **Webuzo panel** (usually `https://YOUR_VPS_IP:20000` or `https://yourdomain.com:20000`).
+### Via Webuzo Terminal (easiest):
 
-2. In the left sidebar, find **Node.js Selector** (sometimes under "Software" or "Advanced").
-
-3. Click **Install Node.js** if not already installed. Choose **Node.js 18 LTS** or newer.
-
-4. Once installed, click **Create Application** (or "Setup Node.js App") with these settings:
-
-   | Field | Value |
-   |---|---|
-   | **Application Root** | `rasmuta` (the folder name inside `public_html`) |
-   | **Application URL** | your domain or subdomain, e.g. `rasmuta.yourdomain.com` |
-   | **Application Mode** | `Production` |
-   | **Node.js Version** | 18 LTS (or newer) |
-   | **Application Startup File** | `server.js` (you'll fix the path in step 5) |
-
-   Don't start the app yet — we need to build first.
-
----
-
-## 4. Configure the environment
-
-Create a `.env` file in the project root:
+1. Webuzo panel → **Terminal** (under "Software" or "Advanced").
+2. Run:
 
 ```bash
-cd /home/USERNAME/public_html/rasmuta
+cd ~/public_html
+git clone https://github.com/lilromeo2290/RasMuta.git rasmuta
+cd rasmuta
+```
+
+If `rasmuta` already exists (you created the addon domain in step 1b), clone to a temp name and move:
+
+```bash
+cd ~/public_html
+git clone https://github.com/lilromeo2290/RasMuta.git rasmuta-tmp
+mv rasmuta-tmp/* rasmuta-tmp/.* rasmuta/ 2>/dev/null
+rm -rf rasmuta-tmp
+cd rasmuta
+```
+
+### Via SSH:
+
+```bash
+ssh YOUR_USERNAME@YOUR_VPS_IP
+cd ~/public_html
+git clone https://github.com/lilromeo2290/RasMuta.git rasmuta
+cd rasmuta
+```
+
+---
+
+## 3. Configure the environment
+
+Create your `.env` file from the template:
+
+```bash
+cp .env.example .env
 nano .env
 ```
 
-Paste and edit:
+Edit the `DATABASE_URL` line — replace `YOUR_USERNAME` with your actual Webuzo username:
 
 ```
-DATABASE_URL=file:/home/USERNAME/public_html/rasmuta/db/custom.db
+DATABASE_URL=file:/home/YOUR_USERNAME/public_html/rasmuta/db/custom.db
 NODE_ENV=production
 PORT=3000
 ```
 
-Replace `USERNAME` with your actual Webuzo username. Save (`Ctrl+O`, `Enter`, `Ctrl+X` to exit nano).
+Save (`Ctrl+O`, `Enter`) and exit (`Ctrl+X`).
 
-> ⚠️ **Important:** The `DATABASE_URL` must be an **absolute path**. The `db/` folder must be **writable** by the web server user.
+> ⚠️ **The `DATABASE_URL` MUST be an absolute path with your actual username.** This is the #1 cause of deployment failures.
 
 ---
 
-## 5. Install dependencies and build
+## 4. Install + build
 
 Run the deploy script:
 
 ```bash
-cd /home/USERNAME/public_html/rasmuta
 bash scripts/deploy-webuzo.sh
 ```
 
-This script will:
-1. Run `npm install` (installs dependencies)
-2. Run `npx prisma generate` (generates the Prisma client)
-3. Run `npx prisma db push` (creates the SQLite database + tables)
-4. Run `npm run build` (creates the production standalone build at `.next/standalone/`)
+This script:
+1. ✅ Verifies Node.js is installed
+2. ✅ Runs `npm install` (installs dependencies — 1-2 minutes)
+3. ✅ Generates the Prisma client
+4. ✅ Runs `npx prisma db push` (creates the SQLite database + tables)
+5. ✅ Builds the production standalone bundle (`npm run build` — 1-3 minutes)
 
-This takes 1–3 minutes. When it finishes, you should see `✅ BUILD COMPLETE`.
-
-### If the script fails
-
-- **"Node.js is not installed"** → Go back to step 3 and install Node.js via the Webuzo panel.
-- **Permission errors on `db/`** → Run: `chmod -R 755 db && chown -R USERNAME:USERNAME db`
-- **Build OOM (out of memory)** → Add swap or build with: `NODE_OPTIONS="--max-old-space-size=1024" npm run build`
+⏱️ Total time: 3–5 minutes. When it finishes, you'll see `✅ BUILD COMPLETE`.
 
 ---
 
-## 6. Point Webuzo's Node.js app at the standalone server
+## 5. Set up the Node.js app in Webuzo
 
-The production server lives at `.next/standalone/server.js`. You have two ways to wire it up:
+1. Webuzo panel → **Software → Setup Node.js App** (or "Node.js Selector").
 
-### Option A — Via Webuzo's Node.js Selector (easiest)
+2. Click **Create Application**:
 
-1. Open the Node.js app you created in step 3.
-2. Edit the **Application Startup File** to:
-   ```
-   .next/standalone/server.js
-   ```
-3. Set the **Application Root** to `rasmuta` (the folder in `public_html`).
-4. Set **Application Mode** to `Production`.
-5. Click **Start App**.
-6. Visit the App URL — your site should be live! 🎉
+   | Field | Value |
+   |---|---|
+   | **Node.js version** | 18.x or 20.x (highest available) |
+   | **Application mode** | Production |
+   | **Application root** | `rasmuta` |
+   | **Application URL** | your domain (e.g. `rasmuta.org`) |
+   | **Application startup file** | `.next/standalone/server.js` |
 
-### Option B — Manual (run behind Nginx/Apache as a reverse proxy)
+3. In **Environment variables**, add:
 
-If Webuzo's Node.js Selector is being finicky, run the server manually:
+   | Variable | Value |
+   |---|---|
+   | `DATABASE_URL` | `file:/home/YOUR_USERNAME/public_html/rasmuta/db/custom.db` |
+   | `NODE_ENV` | `production` |
+   | `PORT` | `3000` |
+
+   *(Must match what's in your `.env` file exactly.)*
+
+4. Click **Create** then **Start App**.
+
+5. Click the **App URL** — your site should load! 🎉
+
+---
+
+## 6. SSL certificate (recommended)
+
+1. Webuzo → **SSL/TLS → Let's Encrypt**.
+2. Select your domain → **Issue Certificate**.
+3. Wait 30–60 seconds.
+4. Your site is now accessible at `https://rasmuta.org` ✨
+
+---
+
+## 7. Updating the site later
+
+Whenever you push new code to GitHub, update the VPS:
 
 ```bash
-cd /home/USERNAME/public_html/rasmuta
-NODE_ENV=production PORT=3000 node .next/standalone/server.js &
+cd ~/public_html/rasmuta
+git pull origin main
+bash scripts/deploy-webuzo.sh
 ```
 
-Then in Webuzo, set up a **reverse proxy** from your domain (port 80/443) to `localhost:3000`:
-- Webuzo panel → **Server Config → Nginx/Apache** → add a proxy pass rule.
-- Or use Webuzo's "Proxy" feature under the domain settings.
+Then in Webuzo → Node.js App → click **Restart App** (or `pm2 restart rasmuta` if using PM2).
 
 ---
 
-## 7. (Recommended) Run the server permanently with PM2
+## 8. (Optional) Run permanently with PM2
 
-Webuzo's Node.js Selector keeps the app running across reboots, but if you're running the server manually (Option B above), use **PM2** so the server restarts automatically if it crashes or the VPS reboots:
+If Webuzo's Node.js Selector isn't keeping the app alive, use PM2:
 
 ```bash
-# Install PM2 globally
 npm install -g pm2
-
-# Start the app
-cd /home/USERNAME/public_html/rasmuta
+cd ~/public_html/rasmuta
 NODE_ENV=production PORT=3000 pm2 start .next/standalone/server.js --name rasmuta
-
-# Save the PM2 process list and set it to start on boot
 pm2 save
 pm2 startup    # follow the instructions it prints
 ```
 
 Useful PM2 commands:
 ```bash
-pm2 status              # see if the app is running
+pm2 status              # check if running
 pm2 logs rasmuta        # tail logs
-pm2 restart rasmuta     # restart after a code update
+pm2 restart rasmuta     # restart after update
 pm2 stop rasmuta        # stop
 ```
 
 ---
 
-## 8. Point your domain (optional but recommended)
-
-1. In Webuzo panel → **Domains → Add Domain**, add your domain (e.g. `rasmutafoundation.org`).
-2. Make sure the domain's DNS A record points to your VPS IP.
-3. In Webuzo → **SSL/TLS → Let's Encrypt**, issue a free SSL certificate for the domain.
-4. The Node.js app should now be served at `https://rasmutafoundation.org`.
-
----
-
-## 9. Updating the site later
-
-When you push new code to GitHub, update the VPS like this:
-
-```bash
-cd /home/USERNAME/public_html/rasmuta
-git pull origin main
-bash scripts/deploy-webuzo.sh
-# then either:
-#   - Webuzo panel → Node.js app → Restart
-#   OR
-#   - pm2 restart rasmuta
-```
-
----
-
-## 10. Backing up the database
+## 9. Backing up the database
 
 The SQLite database lives at `db/custom.db`. Back it up periodically:
 
 ```bash
-cp /home/USERNAME/public_html/rasmuta/db/custom.db /path/to/backup/custom-$(date +%F).db
+cp ~/public_html/rasmuta/db/custom.db ~/backups/custom-$(date +%F).db
 ```
 
 Or set up a cron job via Webuzo → **Cron Jobs**:
 ```
-0 3 * * * cp /home/USERNAME/public_html/rasmuta/db/custom.db /backups/custom-$(date +\%F).db
+0 3 * * * cp /home/YOUR_USERNAME/public_html/rasmuta/db/custom.db /home/YOUR_USERNAME/backups/custom-$(date +\%F).db
 ```
 
 ---
 
-## 11. Troubleshooting
+## 10. Troubleshooting
 
 | Symptom | Likely cause / fix |
 |---|---|
-| **502 Bad Gateway** | Node server isn't running. Check `pm2 status` or Webuzo's Node.js app status. |
-| **500 Internal Server Error** | Check `pm2 logs rasmuta` or Webuzo's Node.js app error log. Most often a missing `.env` or wrong `DATABASE_URL` path. |
-| **Blank white page** | The standalone build's static files aren't being served. Make sure `npm run build` finished (it copies `.next/static` and `public/` into `.next/standalone/`). |
-| **EACCES permission denied on db/** | `chmod -R 755 db && chown -R USERNAME:USERNAME db` |
-| **Port 3000 already in use** | Change `PORT=3000` in `.env` to a free port (e.g. `PORT=3001`) and update your reverse proxy. |
+| **502 Bad Gateway** | Node server not running. Check `pm2 status` or Webuzo's Node.js app status. |
+| **500 Internal Server Error** | Check `.env` — most often wrong `DATABASE_URL` path. Run `npx prisma db push` again. |
+| **Blank white page** | Static assets not served. Verify `npm run build` finished and `.next/standalone/.next/static/` exists. |
+| **EACCES permission denied on db/** | `chmod -R 755 db && chown -R YOUR_USERNAME:YOUR_USERNAME db` |
+| **Port 3000 already in use** | Change `PORT=3001` in `.env` and the Node.js app env vars. |
 | **Build fails with "out of memory"** | `NODE_OPTIONS="--max-old-space-size=1024" npm run build` |
 | **Prisma client not found** | Run `npx prisma generate` again after `npm install`. |
-| **Can't access site at the domain** | DNS hasn't propagated, or the domain isn't added in Webuzo. Allow up to 24h for DNS. |
+| **App URL shows old content after update** | Webuzo → Node.js App → "Restart App". |
+| **Site shows Webuzo default page** | Addon domain Document Root is wrong. Set it to `public_html/rasmuta`. |
+| **`git clone` fails** | Check internet access on the VPS: `ping github.com`. Or download a ZIP via File Manager and extract. |
 
 ---
 
-## 12. Quick reference — file locations on the VPS
+## 11. File locations on the VPS
 
-| What | Where |
+| What | Path |
 |---|---|
-| Project root | `/home/USERNAME/public_html/rasmuta/` |
-| Environment file | `/home/USERNAME/public_html/rasmuta/.env` |
-| SQLite database | `/home/USERNAME/public_html/rasmuta/db/custom.db` |
-| Production server | `/home/USERNAME/public_html/rasmuta/.next/standalone/server.js` |
-| Static assets | `/home/USERNAME/public_html/rasmuta/.next/standalone/.next/static/` and `.../public/` |
-| PM2 logs | `~/.pm2/logs/rasmuta-out.log` and `rasmuta-error.log` |
-| Deploy script | `/home/USERNAME/public_html/rasmuta/scripts/deploy-webuzo.sh` |
+| Project root | `/home/YOUR_USERNAME/public_html/rasmuta/` |
+| Environment file | `/home/YOUR_USERNAME/public_html/rasmuta/.env` |
+| SQLite database | `/home/YOUR_USERNAME/public_html/rasmuta/db/custom.db` |
+| Production server | `/home/YOUR_USERNAME/public_html/rasmuta/.next/standalone/server.js` |
+| Static assets | `/home/YOUR_USERNAME/public_html/rasmuta/.next/standalone/.next/static/` |
+| Public uploads | `/home/YOUR_USERNAME/public_html/rasmuta/.next/standalone/public/` |
+| Deploy script | `/home/YOUR_USERNAME/public_html/rasmuta/scripts/deploy-webuzo.sh` |
 
 ---
 
-## 13. One-line summary
+## 12. One-line summary
 
 ```bash
-# On the VPS:
-cd /home/USERNAME/public_html && \
+# On the VPS (via Terminal or SSH):
+cd ~/public_html && \
 git clone https://github.com/lilromeo2290/RasMuta.git rasmuta && \
 cd rasmuta && \
 cp .env.example .env && \
-nano .env  # edit DATABASE_URL with the correct USERNAME, save and exit
+nano .env  # edit DATABASE_URL with your username, save and exit
 bash scripts/deploy-webuzo.sh
-# Then start the app from Webuzo's Node.js Selector, or:
-pm2 start .next/standalone/server.js --name rasmuta
+# Then in Webuzo → Node.js App → Create with startup file .next/standalone/server.js
 ```
 
-That's it. You're live. 🚀
+You're live. 🚀
 
 ---
 
-**Need help?** The full code and history are at https://github.com/lilromeo2290/RasMuta
+**Repo:** https://github.com/lilromeo2290/RasMuta

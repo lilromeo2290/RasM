@@ -30,8 +30,7 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files (real env files are ignored below; .env.example is tracked)
 
 # vercel
 .vercel
@@ -59,10 +58,12 @@ server.log
 /db/*.db-journal
 # User-uploaded files (temporary, processed into /public)
 /upload/
-# Generated screenshots / download artefacts (large, not source)
-/download/*.png
-/download/*.jpg
-/download/*.jpeg
-/download/*.pdf
-# Generated placeholder scripts output is committed (SVGs are source), but the generator script's caches are not
+# Generated screenshots / download artefacts / deployment bundles (large, not source)
+/download/
+/deploy-bundle/
+# Keep the .env.example template tracked (force-added), but ignore real .env files
+/.env
+/.env.local
+/.env.production
+/.env.development
 # Worklog personal notes (if any) — keep the shared worklog.md tracked though
