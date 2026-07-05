@@ -6,7 +6,6 @@ import {
   Heart,
   CreditCard,
   Smartphone,
-  Building2,
   CheckCircle2,
   Shield,
   Gift,
@@ -29,7 +28,6 @@ const presetAmounts = [25, 50, 100, 250, 500, 1000]
 const methods = [
   { id: 'card', label: 'Credit / Debit Card', icon: CreditCard, hint: 'Visa, Mastercard, Verve' },
   { id: 'mobile_money', label: 'Mobile Money', icon: Smartphone, hint: 'MTN, Airtel, 9PSB' },
-  { id: 'bank_transfer', label: 'Bank Transfer', icon: Building2, hint: 'Direct to Foundation account' },
 ]
 
 const frequencies = [
@@ -463,29 +461,6 @@ export function DonateView() {
                       <span><strong>$5,000</strong> — funds a full-tuition scholarship for a year.</span>
                     </li>
                   </ul>
-                </CardContent>
-              </Card>
-
-              <Card className="border-border bg-card">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-navy-gradient ring-1 ring-gold/40">
-                      <Building2 className="h-5 w-5 text-gold" />
-                    </div>
-                    <h3 className="font-serif text-lg text-navy dark:text-gold">
-                      Bank transfer
-                    </h3>
-                  </div>
-                  <p className="mt-3 text-sm text-muted-foreground">
-                    Donations may also be made directly to the Foundation's account. Please use
-                    your email as the reference and write to us so we can acknowledge your gift.
-                  </p>
-                  <div className="mt-4 space-y-1.5 rounded-lg bg-muted/40 p-4 text-sm font-mono">
-                    <div><span className="text-muted-foreground">Bank:</span> First Continental Bank</div>
-                    <div><span className="text-muted-foreground">Account:</span> 3041 9822 07</div>
-                    <div><span className="text-muted-foreground">Name:</span> RAS MUTA Foundation</div>
-                    <div><span className="text-muted-foreground">SWIFT:</span> FCONNGLA</div>
-                  </div>
                 </CardContent>
               </Card>
 
