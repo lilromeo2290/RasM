@@ -193,13 +193,13 @@ export function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-5 text-xs text-cream/70 sm:flex-row sm:px-6 lg:px-8">
-          <p>
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-5 text-xs text-cream/70 sm:px-6 lg:px-8">
+          <p className="text-center font-serif italic text-gold">
+            In loving memory of Edem Divine Nyasorgbor (1979&ndash;2022).
+          </p>
+          <p className="text-center">
             &copy; {new Date().getFullYear()} The RAS MUTA Foundation.
             All rights reserved.
-          </p>
-          <p className="text-center sm:text-right">
-            In loving memory of Edem Divine Nyasorgbor (1979&ndash;2022).
           </p>
         </div>
       </div>
