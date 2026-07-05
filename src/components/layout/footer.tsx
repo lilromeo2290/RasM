@@ -130,6 +130,17 @@ export function Footer() {
             &copy; {new Date().getFullYear()} The RAS MUTA Foundation.
             All rights reserved.
           </p>
+          <p className="text-center text-cream/60">
+            Powered and Designed by{' '}
+            <a
+              href="https://clipe233eng.net/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-gold transition-colors hover:text-gold-light"
+            >
+              Clipe233 Engineers
+            </a>
+          </p>
         </div>
       </div>
     </footer>
