@@ -136,7 +136,7 @@ export function Footer() {
               href="https://clipe233eng.net/"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-medium text-gold transition-colors hover:text-gold-light"
+              className="font-bold text-gold transition-colors hover:text-gold-light underline decoration-gold/40 underline-offset-2"
             >
               Clipe233 Engineers
             </a>
