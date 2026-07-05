@@ -5,7 +5,6 @@ import { Legacy } from '@/components/sections/legacy'
 import { MemorialGallery } from '@/components/sections/memorial-gallery'
 import { FoundationOverview } from '@/components/sections/foundation-overview'
 import { FeaturedPrograms } from '@/components/sections/featured-programs'
-import { Statistics } from '@/components/sections/statistics'
 import { Testimonials } from '@/components/sections/testimonials'
 
 export function HomeView() {
@@ -16,7 +15,6 @@ export function HomeView() {
       <MemorialGallery />
       <FoundationOverview />
       <FeaturedPrograms />
-      <Statistics />
       <Testimonials />
     </>
   )
