@@ -82,9 +82,22 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/ras-muta-logo.jpg",
-    apple: "/ras-muta-logo.jpg",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+      { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+      { url: "/favicon-48x48.png", type: "image/png", sizes: "48x48" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180" },
+    ],
+    other: [
+      { rel: "icon", url: "/icon-192x192.png", sizes: "192x192", type: "image/png" },
+      { rel: "icon", url: "/icon-512x512.png", sizes: "512x512", type: "image/png" },
+    ],
   },
+  manifest: "/manifest.webmanifest",
 };
 
 export default function RootLayout({
@@ -94,6 +107,14 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="canonical" href={siteConfig.url} />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+        <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/manifest.webmanifest" />
+        <meta name="theme-color" content="#0a1f3d" />
+        <meta name="msapplication-TileColor" content="#0a1f3d" />
+        <meta name="msapplication-TileImage" content="/icon-512x512.png" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased bg-background text-foreground`}

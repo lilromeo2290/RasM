@@ -44,7 +44,7 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
     "no-useless-escape": "off",
   },
 }, {
-  ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts", "examples/**", "skills", "deploy-bundle/**", "download/**", "upload/**", "scripts/generate-placeholders.py"]
+  ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts", "examples/**", "skills", "deploy-bundle/**", "download/**", "upload/**", "scripts/generate-placeholders.py", "scripts/generate-favicons.js"]
 }];
 
 export default eslintConfig;
