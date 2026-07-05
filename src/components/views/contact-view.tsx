@@ -31,7 +31,7 @@ const contactInfo = [
   {
     icon: Phone,
     title: 'Telephone',
-    lines: ['+234 805 000 0000', '+234 700 NYASORG (692 7674)'],
+    lines: ['0242115299'],
   },
   {
     icon: Mail,
@@ -211,7 +211,7 @@ export function ContactView() {
                             id="c-phone"
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
-                            placeholder="+234 ..."
+                            placeholder="024 XXX XXXX"
                           />
                         </div>
                         <div>
@@ -294,7 +294,7 @@ export function ContactView() {
                   </div>
                   <div className="mt-4 flex flex-wrap gap-2">
                     <a
-                      href="https://wa.me/2348000000000"
+                      href="https://wa.me/233242115299"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
@@ -330,7 +330,7 @@ export function ContactView() {
                     <a href="mailto:press@rasmutafoundation.org" className="font-medium text-navy dark:text-gold hover:underline">
                       press@rasmutafoundation.org
                     </a>
-                    <div className="text-muted-foreground">+234 805 000 0001</div>
+                    <div className="text-muted-foreground">0242115299</div>
                   </div>
                 </CardContent>
               </Card>

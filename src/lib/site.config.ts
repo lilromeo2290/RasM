@@ -32,7 +32,7 @@ export const siteConfig = {
   },
 
   /** Primary phone number. */
-  phone: '+234 805 000 0000',
+  phone: '0242115299',
 
   /** Social profile (only Facebook is currently used). */
   social: {
@@ -40,7 +40,7 @@ export const siteConfig = {
   },
 
   /** WhatsApp click-to-chat link. */
-  whatsapp: 'https://wa.me/2348000000000',
+  whatsapp: 'https://wa.me/233242115299',
 } as const
 
 export type SiteConfig = typeof siteConfig

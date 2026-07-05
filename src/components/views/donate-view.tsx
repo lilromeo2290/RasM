@@ -343,7 +343,7 @@ export function DonateView() {
                                 id="dn-phone"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
-                                placeholder="+234 ..."
+                                placeholder="024 XXX XXXX"
                               />
                             </div>
                           </div>

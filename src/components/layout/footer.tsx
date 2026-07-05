@@ -104,7 +104,7 @@ export function Footer() {
             scholarships, mentorship, and the dignity of communities too often unheard.
           </p>
           <a
-            href="https://wa.me/2348000000000"
+            href="https://wa.me/233242115299"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-md bg-white/10 px-3 py-2 text-sm font-medium text-cream ring-1 ring-white/15 transition-colors hover:bg-white/15"
@@ -148,7 +148,7 @@ export function Footer() {
             </li>
             <li className="flex items-center gap-2">
               <Phone className="h-4 w-4 flex-shrink-0 text-gold" />
-              <span>+234 805 000 0000</span>
+              <span>0242115299</span>
             </li>
             <li className="flex items-center gap-2">
               <Mail className="h-4 w-4 flex-shrink-0 text-gold" />
