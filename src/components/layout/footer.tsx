@@ -1,87 +1,16 @@
 'use client'
 
 import * as React from 'react'
-import { Mail, Phone, MapPin, Facebook, MessageCircle, Send } from 'lucide-react'
+import { Mail, Phone, MapPin, Facebook, MessageCircle } from 'lucide-react'
 import { useAppStore } from '@/lib/store'
 import { navigation } from '@/lib/data'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { useToast } from '@/hooks/use-toast'
 
 export function Footer() {
   const { setView } = useAppStore()
-  const { toast } = useToast()
-  const [email, setEmail] = React.useState('')
-  const [submitting, setSubmitting] = React.useState(false)
-
-  const onSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!email) return
-    setSubmitting(true)
-    try {
-      const res = await fetch('/api/newsletter', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source: 'footer' }),
-      })
-      const data = await res.json()
-      if (data.ok) {
-        toast({
-          title: 'Subscribed',
-          description: 'Thank you. You will receive Foundation updates by email.',
-        })
-        setEmail('')
-      } else {
-        toast({
-          title: 'Could not subscribe',
-          description: data.error || 'Please try again.',
-          variant: 'destructive',
-        })
-      }
-    } catch {
-      toast({
-        title: 'Network error',
-        description: 'Please try again later.',
-        variant: 'destructive',
-      })
-    } finally {
-      setSubmitting(false)
-    }
-  }
 
   return (
     <footer className="mt-auto bg-navy text-cream">
-      {/* Newsletter band */}
-      <div className="border-b border-white/10">
-        <div className="mx-auto flex max-w-7xl flex-col items-start gap-6 px-4 py-10 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
-          <div className="max-w-md">
-            <h3 className="font-serif text-2xl text-gold">Stay in touch</h3>
-            <p className="mt-2 text-sm text-cream/80">
-              Receive announcements, Memorial Lecture invitations, and the Foundation's
-              annual report. We will not share your email, and you may unsubscribe at any time.
-            </p>
-          </div>
-          <form onSubmit={onSubscribe} className="flex w-full max-w-md gap-2">
-            <Input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Your email address"
-              className="border-white/20 bg-white/10 text-cream placeholder:text-cream/60"
-              aria-label="Email address"
-            />
-            <Button
-              type="submit"
-              disabled={submitting}
-              className="bg-gold-gradient text-navy hover:opacity-90 font-semibold"
-            >
-              <Send className="mr-1 h-4 w-4" /> Subscribe
-            </Button>
-          </form>
-        </div>
-      </div>
-
       {/* Main footer */}
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 py-12 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">
         {/* Brand */}
