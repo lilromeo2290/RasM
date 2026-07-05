@@ -29,20 +29,11 @@ export function Hero() {
 
       <div className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
-          <motion.span
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-navy/40 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-gold backdrop-blur"
-          >
-            In Memoriam · 1979 – 2022
-          </motion.span>
-
           <motion.h1
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.05 }}
-            className="mt-5 font-serif text-4xl font-bold leading-[1.05] text-cream sm:text-5xl lg:text-6xl"
+            className="font-serif text-4xl font-bold leading-[1.05] text-cream sm:text-5xl lg:text-6xl"
           >
             {broadcaster.name}
           </motion.h1>
