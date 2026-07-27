@@ -131,14 +131,14 @@ export function Footer() {
             All rights reserved.
           </p>
           <p className="text-center text-cream/60">
-            Powered and Designed by{' '}
+            Powered and Hosted by{' '}
             <a
-              href="https://clipe233eng.net/"
+              href="https://clipeconsult.com/"
               target="_blank"
               rel="noopener noreferrer"
               className="font-bold text-gold transition-colors hover:text-gold-light underline decoration-gold/40 underline-offset-2"
             >
-              Clipe233 Engineers
+              CLIPE CONSULT
             </a>
           </p>
         </div>
