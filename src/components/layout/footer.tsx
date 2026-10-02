@@ -133,12 +133,12 @@ export function Footer() {
           <p className="text-center text-cream/60">
             Powered and Hosted by{' '}
             <a
-              href="https://clipeconsult.com/"
+              href="https://raclipeconsult.com/"
               target="_blank"
               rel="noopener noreferrer"
               className="font-bold text-gold transition-colors hover:text-gold-light underline decoration-gold/40 underline-offset-2"
             >
-              CLIPE CONSULT
+              RaClipe Consult
             </a>
           </p>
         </div>
